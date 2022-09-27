@@ -58,7 +58,7 @@ export default function PaymentMoreMenu(props) {
           <ListItemIcon >
             <Iconify icon="eva:trash-2-outline" width={24} height={24} />
           </ListItemIcon>
-          <ListItemText primary="Delete" primaryTypographyProps={{ variant: 'body2' }} />
+          <ListItemText primary="Sil" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
 
 
@@ -68,7 +68,7 @@ export default function PaymentMoreMenu(props) {
           <ListItemIcon >
             <Iconify icon="eva:edit-fill" width={24} height={24} />
           </ListItemIcon>
-          <ListItemText primary="Edit" primaryTypographyProps={{ variant: 'body2' }} />
+          <ListItemText primary="Dəyiş" primaryTypographyProps={{ variant: 'body2' }} />
 
         </MenuItem>
       </Menu>

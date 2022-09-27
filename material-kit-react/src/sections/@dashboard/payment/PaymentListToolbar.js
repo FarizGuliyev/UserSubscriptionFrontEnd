@@ -1,9 +1,11 @@
 import PropTypes from 'prop-types';
 // material
 import { styled } from '@mui/material/styles';
-import { Toolbar, Tooltip, IconButton, Typography, OutlinedInput, InputAdornment } from '@mui/material';
+import { Toolbar, Typography, OutlinedInput, InputAdornment } from '@mui/material';
 // component
 import Iconify from '../../../components/Iconify';
+
+import PaymentCreate from './PaymentCreate';
 
 // ----------------------------------------------------------------------
 
@@ -75,6 +77,7 @@ export default function PaymentListToolbar({ numSelected, filterName, onFilterNa
           </IconButton>
         </Tooltip>
       )} */}
+      <PaymentCreate />
     </RootStyle>
   );
 }

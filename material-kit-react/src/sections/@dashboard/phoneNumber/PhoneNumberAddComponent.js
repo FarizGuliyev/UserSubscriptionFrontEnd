@@ -5,7 +5,7 @@ import {
     Input
 
 } from '@mui/material';
-import ProductMoreMenu from "./PhoneNumberMoreMenu";
+import PhoneNumberMoreMenu from "./PhoneNumberMoreMenu";
 
 
 export default function PhoneNumberAddComponent(props) {
@@ -32,7 +32,7 @@ export default function PhoneNumberAddComponent(props) {
             </TableCell>
            
             <TableCell>
-                <ProductMoreMenu phone={phoneNumber} />
+                <PhoneNumberMoreMenu phone={phoneNumber} />
             </TableCell>
         </TableRow>
     )

@@ -117,7 +117,7 @@ export default function Payment() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Məhsullar
+            Ödənişlər
           </Typography>
 
         </Stack>
