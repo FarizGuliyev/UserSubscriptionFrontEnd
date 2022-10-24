@@ -22,7 +22,8 @@ import { ProductAddComponent, ProductListHead, ProductListToolbar } from '../sec
 
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Abunəlik paketi', alignRight: false },
+  { id: 'id', label: '№', alignRight: false },
+  { id: 'subName', label: 'Abunəlik paketi', alignRight: false },
   { id: 'price', label: 'Paket qiyməti', alignRight: false },
   { id: 'note', label: 'Açıqlama', alignRight: false },
 ];
@@ -53,7 +54,7 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (_user) => _user.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(array, (_user) => _user.subName.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el) => el[0]);
 }
@@ -79,7 +80,7 @@ export default function Product() {
 
   const [selected, setSelected] = useState([]);
 
-  const [orderBy, setOrderBy] = useState('name');
+  const [orderBy, setOrderBy] = useState('id');
 
   const [filterName, setFilterName] = useState('');
 
@@ -111,7 +112,7 @@ export default function Product() {
   const isUserNotFound = filteredUsers.length === 0;
 
   return (
-    <Page title="Məhsullar">
+    <Page title="Product">
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
@@ -136,9 +137,9 @@ export default function Product() {
 
                 />
                 <TableBody>
-                  {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                  {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                     return (
-                      <ProductAddComponent key={index} list={row} />
+                      <ProductAddComponent key={row.id} list={row} />
                     );
                   })}
 
@@ -163,7 +164,7 @@ export default function Product() {
           </Scrollbar>
 
           <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
+            rowsPerPageOptions={[5, 10, 25, 100]}
             component="div"
             count={productlist.length}
             rowsPerPage={rowsPerPage}

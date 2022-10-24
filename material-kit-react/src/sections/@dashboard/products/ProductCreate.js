@@ -20,7 +20,7 @@ import {
 import ProductListHead from './ProductListHead';
 
 const TABLE_HEAD = [
-    { id: 'name', label: 'Abunəlik paketi', alignRight: false },
+    { id: 'subName', label: 'Abunəlik paketi', alignRight: false },
     { id: 'price', label: 'Paket qiyməti', alignRight: false },
     { id: 'note', label: 'Açıqlama', alignRight: false },
 ];
@@ -33,7 +33,7 @@ export default function ProductCreate() {
     const [isOpen, setIsOpen] = useState(false);
 
     const [product, setProduct] = useState({
-        Name: "",
+        SubName: "",
         Price: 0,
         Note: "",
     });
@@ -67,7 +67,7 @@ export default function ProductCreate() {
                 transformOrigin={{ vertical: 'top', horizontal: 'right' }}>
                 <Stack direction="column" alignItems="center" >
                     <Typography variant="h5" gutterBottom >
-                        Telefon nömrəsi əlavə edin
+                        Yeni məhsul əlavə edin
                     </Typography>
                 </Stack>
 
@@ -81,8 +81,8 @@ export default function ProductCreate() {
                             >
 
                                 <TableCell align="center">
-                                    <Input value={product.Name} inputProps={{ min: 0, style: { textAlign: 'center' } }}
-                                        onChange={(e) => setProduct({ ...product, Name: e.target.value })} />
+                                    <Input value={product.SubName} inputProps={{ min: 0, style: { textAlign: 'center' } }}
+                                        onChange={(e) => setProduct({ ...product, SubName: e.target.value })} />
                                 </TableCell>
 
                                 <TableCell align="center">

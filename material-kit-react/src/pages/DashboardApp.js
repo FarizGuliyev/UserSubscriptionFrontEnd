@@ -12,17 +12,13 @@ import {
   Typography,
   TableContainer,
   TablePagination,
+  Input,
 } from '@mui/material';
 // components
 import Page from '../components/Page';
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
-import { DashboardListHead, DashboardListToolbar,DashboardMoreMenu } from '../sections/@dashboard/app';
-// mock
-import USERLIST from '../_mock/user';
-
-
-
+import { DashboardListHead, DashboardListToolbar, DashboardMoreMenu } from '../sections/@dashboard/app';
 
 // ----------------------------------------------------------------------
 
@@ -62,7 +58,7 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (_user) => _user.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(array, (_user) => _user.userName.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el) => el[0]);
 }
@@ -82,10 +78,6 @@ export default function DashboardApp() {
     getAllModels();
   }, []);
 
-  useEffect(() => {
-    console.log("***:", list)
-  }, [list.length])
-
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
@@ -98,13 +90,13 @@ export default function DashboardApp() {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const handleRequestSort = (property) => {
+  const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
 
-  const handleChangePage = (newPage) => {
+  const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
@@ -124,7 +116,7 @@ export default function DashboardApp() {
   const isUserNotFound = filteredUsers.length === 0;
 
   return (
-    <Page title="Son əməliyyatlar">
+    <Page title="Dashboard">
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
@@ -150,7 +142,7 @@ export default function DashboardApp() {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id,userName, productAmount, paymentAmount, paymentDate, debt } = row;
+                    const { id, userName, productAmount, paymentAmount, paymentDate, debt } = row;
                     const isItemSelected = selected.indexOf(userName) !== -1;
 
                     return (
@@ -170,7 +162,7 @@ export default function DashboardApp() {
                         <TableCell align="center">{debt}</TableCell>
 
                       </TableRow>
-                    
+
                     );
                   })}
                   {emptyRows > 0 && (

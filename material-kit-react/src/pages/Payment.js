@@ -22,7 +22,9 @@ import { PaymentAddComponent, PaymentListHead, PaymentListToolbar } from '../sec
 
 
 const TABLE_HEAD = [
-  { id: 'userName', label: 'İstifadəçi adı', alignRight: false },
+  { id: 'id', label: '№', alignRight: false },
+  { id: 'userName', label: 'Adı', alignRight: false },
+  { id: 'surname', label: 'Soyadı', alignRight: false },
   { id: 'amount', label: 'Ödəniş miqdarı', alignRight: false },
   { id: 'type', label: 'Ödəniş tipi', alignRight: false },
   { id: 'date', label: 'Ödəniş tarixi', alignRight: false },
@@ -55,7 +57,7 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (_user) => _user.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(array, (_user) => _user.userName.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el) => el[0]);
 }
@@ -74,14 +76,13 @@ export default function Payment() {
     getAllSubs();
   }, []);
 
-
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
 
   const [selected, setSelected] = useState([]);
 
-  const [orderBy, setOrderBy] = useState('name');
+  const [orderBy, setOrderBy] = useState('id');
 
   const [filterName, setFilterName] = useState('');
 
@@ -93,7 +94,7 @@ export default function Payment() {
     setOrderBy(property);
   };
 
-  const handleChangePage = (event, newPage) => {
+  const   handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
@@ -113,7 +114,7 @@ export default function Payment() {
   const isUserNotFound = filteredUsers.length === 0;
 
   return (
-    <Page title="Məhsullar">
+    <Page title="Payment">
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
@@ -138,9 +139,10 @@ export default function Payment() {
 
                 />
                 <TableBody>
-                  {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                  {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                    
                     return (
-                      <PaymentAddComponent key={index} list={row} />
+                      <PaymentAddComponent key={row.id} list={row} />
                     );
                   })}
 
@@ -165,7 +167,7 @@ export default function Payment() {
           </Scrollbar>
 
           <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
+            rowsPerPageOptions={[5, 10, 25, 100 ]}
             component="div"
             count={paymentlist.length}
             rowsPerPage={rowsPerPage}

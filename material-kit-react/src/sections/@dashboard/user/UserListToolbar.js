@@ -1,9 +1,12 @@
 import PropTypes from 'prop-types';
 // material
 import { styled } from '@mui/material/styles';
-import { Toolbar, Tooltip, IconButton, Typography, OutlinedInput, InputAdornment } from '@mui/material';
+import { Toolbar, Stack, Typography, OutlinedInput, InputAdornment } from '@mui/material';
 // component
 import Iconify from '../../../components/Iconify';
+import UserTableAddressSearch from '../../../pages/UserTableAddressSearch';
+import UserTableForAddress from '../../../pages/UserTableForAddress';
+
 
 // ----------------------------------------------------------------------
 
@@ -75,6 +78,10 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName 
           </IconButton>
         </Tooltip>
       )} */}
+      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+      <UserTableForAddress/>
+      <UserTableAddressSearch/>
+      </Stack>
     </RootStyle>
   );
 }

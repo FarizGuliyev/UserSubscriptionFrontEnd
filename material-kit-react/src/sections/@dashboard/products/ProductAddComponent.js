@@ -8,12 +8,13 @@ import {
 import ProductMoreMenu from "./ProductMoreMenu";
 
 
+
 export default function ProductAddComponent(props) {
-    const { id, name, price, note } = props.list;
+    const { id, subName, price, note } = props.list;
 
     const [subs, setSubs] = useState({
         Id: id,
-        Name: name,
+        SubName: subName,
         Price: price,
         Note: note,
     });
@@ -22,9 +23,10 @@ export default function ProductAddComponent(props) {
 
         <TableRow
         >
+            <TableCell align="center">{subs.Id}</TableCell>
             <TableCell align="center">
-                <Input value={subs.Name} inputProps={{ min: 0, style: { textAlign: 'center' } }}
-                    onChange={(e) => setSubs({ ...subs, Name: e.target.value })} />
+                <Input value={subs.SubName} inputProps={{ min: 0, style: { textAlign: 'center' } }}
+                    onChange={(e) => setSubs({ ...subs, SubName: e.target.value })} />
             </TableCell>
             <TableCell align="center">
                 <Input value={subs.Price} inputProps={{ min: 0, style: { textAlign: 'center' } }}

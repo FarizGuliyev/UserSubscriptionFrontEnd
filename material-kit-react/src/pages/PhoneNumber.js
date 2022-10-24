@@ -1,6 +1,7 @@
 import { filter } from 'lodash';
 import { useState, useEffect } from 'react';
 
+
 // material
 import {
   Card,
@@ -22,7 +23,9 @@ import { PhoneNumberAddComponent, PhoneNumberListHead, PhoneNumberListToolbar } 
 
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'İstifadəçi adı', alignRight: false },
+  { id: 'id', label: '№', alignRight: false },
+  { id: 'userName', label: 'Adı', alignRight: false },
+  { id: 'surname', label: 'Soyadı', alignRight: false },
   { id: 'price', label: 'İstifadəçinin telefon nömrəsi', alignRight: false },
 ];
 
@@ -52,7 +55,7 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (_user) => _user.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(array, (_user) => _user.userName.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el) => el[0]);
 }
@@ -78,7 +81,7 @@ export default function PhoneNumber() {
 
   const [selected, setSelected] = useState([]);
 
-  const [orderBy, setOrderBy] = useState('name');
+  const [orderBy, setOrderBy] = useState('id');
 
   const [filterName, setFilterName] = useState('');
 
@@ -110,10 +113,10 @@ export default function PhoneNumber() {
   const isUserNotFound = filteredUsers.length === 0;
 
   return (
-    <Page title="Məhsullar">
+    <Page title="PhoneNumber">
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4" gutterBottom>
+          <Typography variant="h3" gutterBottom>
             İstifadəçilərin telefon nömrələri
           </Typography>
 
@@ -135,9 +138,10 @@ export default function PhoneNumber() {
 
                 />
                 <TableBody>
-                  {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                  {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+
                     return (
-                      <PhoneNumberAddComponent key={index} phone={row} />
+                      <PhoneNumberAddComponent key={row.id} phone={row} />
                     );
                   })}
 
@@ -162,7 +166,7 @@ export default function PhoneNumber() {
           </Scrollbar>
 
           <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
+            rowsPerPageOptions={[5, 10, 25, 100]}
             component="div"
             count={phonelist.length}
             rowsPerPage={rowsPerPage}

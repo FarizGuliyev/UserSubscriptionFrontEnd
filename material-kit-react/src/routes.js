@@ -9,6 +9,7 @@ import Register from './pages/Register';
 import Products from './pages/Products';
 import DashboardApp from './pages/DashboardApp';
 import Payment from './pages/Payment';
+import Address from './pages/Address';
 
 // ----------------------------------------------------------------------
 
@@ -25,7 +26,12 @@ export default function Router() {
         { path: 'payment', element: <Payment /> },
       ],
     },
-    
+
+    {
+      path: '/address',
+      element: <Address />
+    },
+
     {
       path: '/register',
       element: <Register />,
@@ -35,9 +41,9 @@ export default function Router() {
       element: <LogoOnlyLayout />,
       children: [
         { path: '/', element: <Navigate to="/dashboard/app" /> },
-
       ],
     },
- 
+
+
   ]);
 }

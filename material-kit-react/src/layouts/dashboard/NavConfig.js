@@ -32,10 +32,16 @@ const navConfig = [
     icon: getIcon('entypo:credit')
   },
   {
+    title: 'Ünvan',
+    path: '/address',
+    icon: getIcon('eva:pin-fill'),
+  },
+  {
     title: 'Qeydiyyat',
     path: '/register',
     icon: getIcon('eva:person-add-fill'),
-  }
+  },
+
  
 
 ];

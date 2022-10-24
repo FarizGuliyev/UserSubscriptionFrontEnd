@@ -9,11 +9,12 @@ import PhoneNumberMoreMenu from "./PhoneNumberMoreMenu";
 
 
 export default function PhoneNumberAddComponent(props) {
-    const { id, userId, userName, number } = props.phone;
+    const { id, userId, userName,surName, number } = props.phone;
 
     const [phoneNumber, setPhoneNumber] = useState({
         Id: id,
         UserName: userName,
+        SurName: surName,
         UserId: userId,
         Number: number,
     });
@@ -22,9 +23,12 @@ export default function PhoneNumberAddComponent(props) {
 
         <TableRow
         >
+            <TableCell align="center">{phoneNumber.Id} </TableCell>
             <TableCell align="center">
-                <Input value={phoneNumber.UserName} inputProps={{ min: 0, style: { textAlign: 'center' } }}
-                     />
+                {phoneNumber.UserName}
+            </TableCell>
+            <TableCell align="center">
+            {phoneNumber.SurName}
             </TableCell>
             <TableCell align="center">
                 <Input value={phoneNumber.Number} inputProps={{ min: 0, style: { textAlign: 'center' } }}

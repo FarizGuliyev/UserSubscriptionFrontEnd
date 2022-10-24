@@ -17,7 +17,7 @@ import TextField from '@mui/material/TextField';
 import PaymentMoreMenu from "./PaymentMoreMenu";
 
 export default function PaymentAddComponent(props) {
-    const { id, userName, userId, payDate, amount, type, note } = props.list;
+    const { id, userName,surname, userId, payDate, amount, type, note } = props.list;
 
     const [calendarDate, setCalendarDate] = useState(format(new Date(payDate), 'MM-dd-yyyy'));
 
@@ -36,10 +36,9 @@ export default function PaymentAddComponent(props) {
 
         <TableRow
         >
-            <TableCell align="center">
-                <Input key={payment.UserId} value={userName} inputProps={{ min: 0, style: { textAlign: 'center' } }}
-                />
-            </TableCell>
+            <TableCell align="center">{payment.Id}</TableCell>
+            <TableCell align="center">{userName}</TableCell>
+            <TableCell align="center">{surname}</TableCell>
             <TableCell align="center">
                 <Input value={payment.Amount} inputProps={{ min: 0, style: { textAlign: 'center' } }}
                     onChange={(e) => setPayment({ ...payment, Amount: e.target.value })} />

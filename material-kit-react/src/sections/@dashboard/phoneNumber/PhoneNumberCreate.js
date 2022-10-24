@@ -1,27 +1,32 @@
+import { filter } from 'lodash';
 import { useState, useRef, useEffect } from "react";
-import Button from '@mui/material/Button';
+
 import {
     TableRow,
     TableCell,
-    Input,
     Menu,
     Stack,
     Typography,
     Table,
     TableContainer,
-    MenuItem,
-    Select,
-    FormControl,
-    InputLabel,
     TableBody,
+    Card,
+    Container,
+    Button,
     TextField,
 } from '@mui/material';
 
-import PhoneNumberListHead from './PhoneNumberListHead';
+import { LoadingButton } from '@mui/lab';
+
+import { PhoneNumberCreateBySearchUser, PhoneNumberListHead } from ".";
 
 const TABLE_HEAD = [
-    { id: 'name', label: 'İstifadəçi adı', alignRight: false },
-    { id: 'price', label: 'Yeni telefon nömrəsi', alignRight: false },
+    { id: 'id', label: '№', alignRight: false },
+    { id: 'name', label: 'Adı', alignRight: false },
+    { id: 'surName', label: 'Soyadı', alignRight: false },
+    { id: 'fatherName', label: 'Ata adı', alignRight: false },
+    { id: 'button', label: '', alignRight: false },
+
 ];
 
 
@@ -42,86 +47,162 @@ export default function PhoneNumberCreate() {
 
     const ref = useRef(null);
 
-    const [isOpen, setIsOpen] = useState(false);
+    const [page, setPage] = useState(0);
+
+    const [selected, setSelected] = useState([]);
+
+    const [filterName, setFilterName] = useState('');
+
+    const [isUserOpen, setIsUserOpen] = useState(false);
+
+    const [isPhoneOpen, setIsPhoneOpen] = useState(false);
 
     const [phoneNumber, setPhoneNumber] = useState({
         UserId: 0,
         Number: "",
     });
-    const postPhoneNumber = (newPhoneNumber) => {
 
+    const [user, setUser] = useState({
+        Id: userList.id,
+        Name: userList.name,
+        Surname: userList.surname,
+        FatherName: userList.fatherName,
+    });
+
+
+    const postPhoneNumber = (newPhoneNumber) => {
         fetch(`https://localhost:7005/api/PhoneNumber`, {
             method: 'POST', headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*'
             },
             body: JSON.stringify({ ...newPhoneNumber })
-        }
-        )
+        })
     }
 
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleFilterByName = (event) => {
+        setFilterName(event.target.value);
+    };
+
+    function applySortFilter(array, query) {
+        const stabilizedThis = array.map((el, index) => [el, index]);
+
+        if (query) {
+            return filter(array, (_user) => _user.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+        }
+        return stabilizedThis.map((el) => el[0]);
+    }
+
+    const filteredUsers = applySortFilter(userList, filterName);
 
     return (
         <>
-
-            {/* _____________________________________________ */}
-            <Button ref={ref} variant="contained" onClick={() => setIsOpen(true)}>Əlavə et</Button>
+            <Button ref={ref} variant="contained" onClick={() => setIsUserOpen(true)}>Əlavə et</Button>
             <Menu
-                open={isOpen}
+                open={isUserOpen}
                 anchorEl={ref.current}
-                onClose={() => setIsOpen(false)}
+                onClose={() => {
+                    setIsUserOpen(false)
+                    setIsPhoneOpen(false)
+                }}
                 PaperProps={{
                     sx: { width: 941, maxWidth: '100%' },
                 }}
                 anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
                 transformOrigin={{ vertical: 'top', horizontal: 'right' }}>
-                <Stack direction="column" alignItems="center" >
-                    <Typography variant="h5" gutterBottom >
-                        Telefon nömrəsi əlavə edin
-                    </Typography>
-                </Stack>
 
-                <TableContainer sx={{ minWidth: 300 }}>
-                    <Table>
-                        <PhoneNumberListHead
-                            headLabel={TABLE_HEAD}
-                        />
-                        <TableBody>
-                            <TableRow
-                            >
-                                <TableCell align="center">
-                                    <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                                        <InputLabel id="demo-simple-select-label">Ad</InputLabel>
-                                        <Select
-                                            labelId="demo-simple-select-label"
-                                            value={phoneNumber.UserId}
-                                        >
-                                            {userList.map((t) =>
-                                                <MenuItem value={t.id}
-                                                    onClick={() => setPhoneNumber({ ...phoneNumber, UserId: t.id })}
-                                                >{t.name}</MenuItem>
-                                            )}
+                <Container>
+                    <Stack direction="column" alignItems="center" justifyContent="space-between" mb={3}>
+                        <Typography variant="h4" gutterBottom >
+                            Telefon nömrəsi əlavə edin
+                        </Typography>
+                    </Stack>
+                    <Card>
+                        <PhoneNumberCreateBySearchUser numSelected={selected.length} filterName={filterName}
+                            onFilterName={handleFilterByName} />
 
-                                        </Select>
-                                    </FormControl>
-                                </TableCell>
-                                <TableCell align="center">
-                                    <Input value={phoneNumber.Number} inputProps={{ min: 0, style: { textAlign: 'center' } }}
-                                        onChange={(e) => setPhoneNumber({ ...phoneNumber, Number: e.target.value })} />
-                                </TableCell>
+                        {filterName !== '' &&
+                            <TableContainer sx={{ minWidth: 800 }}>
 
-                            </TableRow>
-                        </TableBody>
-                    </Table>
+                                <Table >
+                                    <PhoneNumberListHead
 
-                </TableContainer>
-                <Stack direction="column" alignItems="center">
-                    <Button variant="contained"
-                        onClick={() => {
-                            postPhoneNumber(phoneNumber)
-                            setIsOpen(false)
-                            }} >Yadda saxla</Button>
-                </Stack>
+                                        headLabel={TABLE_HEAD}
+                                        rowCount={userList.length}
+                                        numSelected={selected.length}
+
+                                    />
+                                    <TableBody>
+                                        {filteredUsers.slice(page).map((row) => {
+                                            return (
+                                                <TableRow key={row.Id}>
+
+                                                    <TableCell align="center">
+                                                        {row.id}
+                                                    </TableCell>
+
+                                                    <TableCell align="center">
+                                                        {row.name}
+                                                    </TableCell>
+                                                    <TableCell align="center">
+                                                        {row.surname}
+                                                    </TableCell>
+                                                    <TableCell align="center">
+                                                        {row.fatherName}
+                                                    </TableCell>
+                                                    <TableCell align="center">
+                                                        <Button variant="contained" onClick={() => {
+
+                                                            setUser({ ...user, Id: row.id, Name: row.name, Surname: row.surname })
+                                                            setPhoneNumber({ ...phoneNumber, UserId: row.id })
+                                                            setFilterName('')
+                                                            setIsPhoneOpen(true)
+                                                        }}>Seç</Button>
+
+                                                    </TableCell>
+
+                                                </TableRow>
+
+                                            );
+                                        })}
+
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+
+                        }
+
+                        {isPhoneOpen && filterName === '' &&
+                            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={1} >
+
+                                <Typography   > </Typography>
+                                <Typography   >{user.Id}</Typography>
+                                <Typography   >{user.Name}</Typography>
+                                <Typography   >{user.Surname}</Typography>
+
+
+
+                                <TextField required label="Telefon nömrəsi" value={phoneNumber.Number}
+                                    onChange={(e) => setPhoneNumber({ ...phoneNumber, Number: e.target.value })} />
+
+                                <LoadingButton alignItems="center" type="submit" variant="contained"
+                                    onClick={() => {
+                                        postPhoneNumber(phoneNumber)
+                                        setIsPhoneOpen(false)
+                                    }} >
+                                    Yadda saxla
+                                </LoadingButton>
+                                <Typography   > </Typography>
+                            </Stack>
+                        }
+
+                    </Card>
+                </Container>
+
             </Menu>
         </>
     )

@@ -1,34 +1,40 @@
+import { filter } from 'lodash';
 import { useState, useRef, useEffect } from "react";
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+
 import {
     TableRow,
     TableCell,
-    Input,
     Menu,
     Stack,
     Typography,
     Table,
     TableContainer,
-    MenuItem,
-    Select,
-    FormControl,
-    InputLabel,
     TableBody,
+    Card,
+    Container,
+    Button,
     TextField,
-    Button
+
 } from '@mui/material';
 
-import PaymentListHead from './PaymentListHead';
+import { LoadingButton } from '@mui/lab';
+
+import { fontSize } from '@mui/system';
+import { PaymentCreateBySearchUser, PaymentListHead } from ".";
+
+
 
 const TABLE_HEAD = [
-    { id: 'name', label: 'İstifadəçi adı', alignRight: false },
-    { id: 'amount', label: 'Ödəniş miqdarı', alignRight: false },
-    { id: 'type', label: 'Ödəniş tipi', alignRight: false },
-    { id: 'payDate', label: 'Ödəniş tarixi', alignRight: false },
-    { id: 'note', label: 'Qeyd', alignRight: false },
+    { id: 'id', label: '№', alignRight: false },
+    { id: 'name', label: 'Adı', alignRight: false },
+    { id: 'surName', label: 'Soyadı', alignRight: false },
+    { id: 'fatherName', label: 'Ata adı', alignRight: false },
+    { id: 'button', label: '', alignRight: false },
+
 ];
 
 
@@ -49,86 +55,161 @@ export default function PaymentCreate() {
 
     const ref = useRef(null);
 
-    const [isOpen, setIsOpen] = useState(false);
+    const [page, setPage] = useState(0);
+
+    const [selected, setSelected] = useState([]);
+
+    const [filterName, setFilterName] = useState('');
+
+    const [isUserOpen, setIsUserOpen] = useState(false);
+
+    const [isPaymentOpen, setIsPaymentOpen] = useState(false);
 
     const [payment, setPayment] = useState({
         UserId: 0,
         Amount: 0,
         Type: "",
-        PayDate: "",
-        Note: "",
+        PayDate: new Date().toISOString(),
+        Note: ""
     });
-    const postPayment = (newPayment) => {
-        payment.PayDate = (new Date(new Date(payment.PayDate)
-        .setDate(new Date(payment.PayDate).getDate()+1))).toISOString();
 
+    const [user, setUser] = useState({
+        Id: userList.id,
+        Name: userList.name,
+        Surname: userList.surname,
+        FatherName: userList.fatherName,
+    });
+
+
+    const postPayment = (newPayment) => {
         fetch(`https://localhost:7005/api/Payment`, {
             method: 'POST', headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*'
             },
             body: JSON.stringify({ ...newPayment })
-        }
-        )
+        })
     }
 
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleFilterByName = (event) => {
+        setFilterName(event.target.value);
+    };
+
+    function applySortFilter(array, query) {
+        const stabilizedThis = array.map((el, index) => [el, index]);
+
+        if (query) {
+            return filter(array, (_user) => _user.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+        }
+        return stabilizedThis.map((el) => el[0]);
+    }
+
+    const filteredUsers = applySortFilter(userList, filterName);
 
     return (
         <>
-
-            {/* _____________________________________________ */}
-            <Button ref={ref} variant="contained" onClick={() => setIsOpen(true)}>Əlavə et</Button>
+            <Button ref={ref} variant="contained" onClick={() => setIsUserOpen(true)}>Əlavə et</Button>
             <Menu
-                open={isOpen}
+                open={isUserOpen}
                 anchorEl={ref.current}
-                onClose={() => setIsOpen(false)}
+                onClose={() => {
+                    setIsUserOpen(false)
+                    setIsPaymentOpen(false)
+                }}
                 PaperProps={{
                     sx: { width: 941, maxWidth: '100%' },
                 }}
                 anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
                 transformOrigin={{ vertical: 'top', horizontal: 'right' }}>
-                <Stack direction="column" alignItems="center" >
-                    <Typography variant="h5" gutterBottom >
-                        Yeni ödəniş əlavə edin
-                    </Typography>
-                </Stack>
 
-                <TableContainer sx={{ minWidth: 300 }}>
-                    <Table>
-                        <PaymentListHead
-                            headLabel={TABLE_HEAD}
-                        />
-                        <TableBody>
-                            <TableRow
-                            >
-                                <TableCell align="center">
-                                    <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                                        <InputLabel id="demo-simple-select-label">Ad</InputLabel>
-                                        <Select
-                                            labelId="demo-simple-select-label"
-                                            value={payment.UserId}
-                                        >
-                                            {userList.map((t) =>
-                                                <MenuItem value={t.id}
-                                                    onClick={() => setPayment({ ...payment, UserId: t.id })}
-                                                >{t.name}</MenuItem>
-                                            )}
+                <Container>
+                    <Stack direction="column" alignItems="center" justifyContent="space-between" mb={3}>
+                        <Typography variant="h4" gutterBottom >
+                            Yeni ödəniş əlavə edin
+                        </Typography>
+                    </Stack>
+                    <Card>
+                        <PaymentCreateBySearchUser numSelected={selected.length} filterName={filterName}
+                            onFilterName={handleFilterByName} />
 
-                                        </Select>
-                                    </FormControl>
-                                </TableCell>
+                        {filterName !== '' &&
+                            <TableContainer sx={{ minWidth: 800 }}>
 
-                                <TableCell align="center">
-                                    <Input value={payment.Amount} inputProps={{ min: 0, style: { textAlign: 'center' } }}
+                                <Table >
+                                    <PaymentListHead
+
+                                        headLabel={TABLE_HEAD}
+                                        rowCount={userList.length}
+                                        numSelected={selected.length}
+
+                                    />
+                                    <TableBody>
+                                        {filteredUsers.slice(page).map((row) => {
+                                            return (
+                                                <TableRow key={row.Id}>
+
+                                                    <TableCell align="center">
+                                                        {row.id}
+                                                    </TableCell>
+
+                                                    <TableCell align="center">
+                                                        {row.name}
+                                                    </TableCell>
+                                                    <TableCell align="center">
+                                                        {row.surname}
+                                                    </TableCell>
+                                                    <TableCell align="center">
+                                                        {row.fatherName}
+                                                    </TableCell>
+                                                    <TableCell align="center">
+                                                        <Button variant="contained" onClick={() => {
+
+                                                            setUser({ ...user, Id: row.id, Name: row.name, Surname: row.surname })
+                                                            setPayment({ ...payment, UserId: row.id })
+                                                            setFilterName('')
+                                                            setIsPaymentOpen(true)
+                                                        }}>Seç</Button>
+
+                                                    </TableCell>
+
+                                                </TableRow>
+
+                                            );
+                                        })}
+
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+
+                        }
+
+                        {isPaymentOpen && filterName === '' &&
+                            <>
+                                <div style={{
+                                    display: 'flex',
+                                    textAlign: 'center',
+                                    width: '100%',
+                                    height: '40px',
+                                    paddingLeft: '380px',
+
+
+
+                                }}>
+                                    <Typography variant='h5'>{user.Name} </Typography>
+                                    <div style={{ width: '10px' }} />
+                                    <Typography variant='h5'>{user.Surname}</Typography>
+
+                                </div>
+
+                                <Stack spacing={3}>
+                                    <TextField required label="Ödəniş miqdarı" value={payment.Amount}
                                         onChange={(e) => setPayment({ ...payment, Amount: e.target.value })} />
-                                </TableCell>
-
-                                <TableCell align="center">
-                                    <Input value={payment.Type} inputProps={{ min: 0, style: { textAlign: 'center' } }}
+                                    <TextField required label="Ödəniş tipi" value={payment.Type}
                                         onChange={(e) => setPayment({ ...payment, Type: e.target.value })} />
-                                </TableCell>
-
-                                <TableCell align="center">
                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                                         <DatePicker
                                             label="Ödəniş tarixi"
@@ -139,25 +220,24 @@ export default function PaymentCreate() {
                                             renderInput={(params) => <TextField {...params} />
                                             }
                                         />
-                                    </LocalizationProvider>                                   
-                                </TableCell>
-
-                                <TableCell align="center">
-                                    <Input value={payment.Note} inputProps={{ min: 0, style: { textAlign: 'center' } }}
+                                    </LocalizationProvider>
+                                    <TextField label="Qeyd" value={payment.Note}
                                         onChange={(e) => setPayment({ ...payment, Note: e.target.value })} />
-                                </TableCell>
 
-                            </TableRow>
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <Stack direction="column" alignItems="center">
-                    <Button variant="contained"
-                        onClick={() => {
-                            postPayment(payment)
-                            setIsOpen(false)
-                        }} >Yadda saxla</Button>
-                </Stack>
+                                    <LoadingButton alignItems="center" type="submit" variant="contained"
+                                        onClick={() => {
+                                            postPayment(payment)
+                                            setIsPaymentOpen(false)
+                                        }} >
+                                        Yadda saxla
+                                    </LoadingButton>
+                                    <Typography   > </Typography>
+
+                                </Stack>
+                            </>
+                        }
+                    </Card>
+                </Container>
             </Menu>
         </>
     )

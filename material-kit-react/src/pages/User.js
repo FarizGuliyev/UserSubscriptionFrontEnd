@@ -18,7 +18,7 @@ import {
 import Page from '../components/Page';
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
-import { MenuItemComponent, UserListHead, UserListToolbar} from '../sections/@dashboard/user';
+import { MenuItemComponent, UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 
 // mock
 
@@ -26,13 +26,15 @@ import { MenuItemComponent, UserListHead, UserListToolbar} from '../sections/@da
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
+  { id: 'id', label: '№', alignRight: false },
   { id: 'name', label: 'Ad', alignRight: 'center' },
   { id: 'surName', label: 'Soyad', alignRight: false },
   { id: 'fatherName', label: 'Ata adı', alignRight: false },
-  { id: 'address', label: 'Ünvan', alignRight: false },
-  { id: 'addressDescription', label: 'Əlavə ünvan', alignRight: false },
   { id: 'debt', label: 'Borc', alignRight: false },
   { id: 'productName', label: 'Məhsul', alignRight: false },
+  { id: 'address', label: 'Ünvan', alignRight: false },
+
+
 
 ];
 
@@ -99,7 +101,7 @@ export default function User() {
 
   const [selected, setSelected] = useState([]);
 
-  const [orderBy, setOrderBy] = useState('name');
+  const [orderBy, setOrderBy] = useState('id');
 
   const [filterName, setFilterName] = useState('');
 
@@ -131,7 +133,7 @@ export default function User() {
   const isUserNotFound = filteredUsers.length === 0;
 
   return (
-    <Page title="İstifadəçi məlumatları">
+    <Page title="User">
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
@@ -156,12 +158,12 @@ export default function User() {
 
                 />
                 <TableBody>
-                  {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row,index) => {
+                  {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                     return (
-                      <MenuItemComponent key={index} list={row}/>     
+                      <MenuItemComponent key={row.id} list={row} />
                     );
                   })}
-                  
+
                   {emptyRows > 0 && (
                     <TableRow style={{ height: 53 * emptyRows }}>
                       <TableCell colSpan={6} />
@@ -183,7 +185,7 @@ export default function User() {
           </Scrollbar>
 
           <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
+            rowsPerPageOptions={[5, 10, 25, 100]}
             component="div"
             count={mylist.length}
             rowsPerPage={rowsPerPage}
